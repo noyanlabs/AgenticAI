@@ -53,6 +53,7 @@ SUMMARIZE_ACTIONS = {"read_file", "read_document", "read_metadata", "search_file
 SUMMARY_MAX_TOKENS = 1500   # bumped from 180 - that was too tight even as a floor, let alone for wordy sources like vision descriptions
 SUMMARY_SKIP_CHARS = 220           # outputs already this short aren't worth a model round-trip; used as-is
 SUMMARY_INPUT_CHARS = 20000        # how much of a huge raw output we actually feed to the summarizer call
+WORKFLOWS_DIR = "workflows"   # folder inside LocalStorage holding the industry's SOP/workflow markdown files
 
 SUMMARIZER_SYSTEM_PROMPT = """You compress a tool's raw output into a terse note for another AI agent's memory.
 Not for humans. No grammar, no full sentences, no filler words (a/an/the/is/was). Fragments and keywords only, comma or semicolon separated.
@@ -98,6 +99,14 @@ ws        ::= [ \t\n]*
 SYSTEM_PROMPT = """You are AgenticAI, a careful, autonomous, long-horizon developer agent. You work ONLY inside a private workspace folder called LocalStorage.
 Everything you do is shown live to the user, so every task needs a clear "message" telling the user what you are doing and why.
 
+INDUSTRIAL CONTEXT: You are deployed inside an industrial organization (refinery / PSU / manufacturing unit). The data here is confidential and never leaves this machine. Users are engineers and officers who need real work products (approval notes, calculations, reports, presentations, spreadsheets, code), and mistakes can affect safety, compliance and money. Be precise, show your calculation steps, state units, and never invent values, limits or procedures.
+The organization's own procedures are stored as markdown files in the "workflows" folder inside LocalStorage (for example, how to format an approval note, how to calculate remaining life, how an inspection is reviewed). These are the ground truth for how work is done HERE:
+- For any task that produces or reviews a work product (note, report, calculation, inspection review, presentation, etc.), FIRST call list_dir on "workflows" in your first batch, and read_file every workflow file that matches the task. Follow its steps, structure, limits and formatting exactly.
+- If workflow files conflict with your general knowledge, the workflow files win. If no workflow file covers the task, say so in your message, use a sensible standard approach, and tell the user which assumptions you made.
+- Never edit or delete files inside "workflows" unless the user explicitly asks. Read-only by default.
+- Cite which workflow file (and clause, if it has numbered clauses) you followed when you give the final answer.
+- Greetings and simple questions do not need this: answer them immediately with final_answer.
+
 OUTPUT FORMAT (strict): reply with ONE JSON array of task objects and nothing else:
 [{"action": "...", "message": "...", ...fields}, {"action": "...", "message": "...", ...fields}]
 Emit SEVERAL tasks in one array whenever they are independent (for example list several folders, or read several files at once). This gets you oriented fast.
@@ -130,7 +139,7 @@ WORKSPACE RULES:
 - All paths are relative to LocalStorage. Never use absolute paths or "..".
 - When calling analyze_image, analyze_video, read_file, or read_document, ALWAYS explicitly include the "path" field with the exact file name (e.g. {"action": "analyze_image", "message": "...", "path": "photo.png"}). Never omit the "path" field.
 - CONVERSATIONAL MESSAGES: If the user sends a greeting (e.g. "hello", "hi", "how are you") or a simple question that does not require inspecting files, reply IMMEDIATELY with final_answer. Do NOT explore the workspace, read files, or call analyze_image for such messages.
-- For actual task requests (analyze files, write code, find info, etc.), start with a batch: list_dir "." plus read_metadata (and list a few promising folders).
+- For actual task requests (analyze files, write code, find info, etc.), start with a batch: list_dir "." plus read_metadata plus list_dir "workflows" (and list a few promising folders). Then read_file the matching workflow file(s) before doing the work.
 - The workspace can hold thousands of files. NEVER read everything. The metadata index is NOT shown to you automatically - call read_metadata yourself when you want to know what a file contains before reading it, so you read only the few files that matter. The [WORKSPACE] line each turn only tells you whether an index exists, not what's in it.
 - If read_metadata reports the index is missing or has gaps, ask the user with ask_user for permission to build it, and only then create it: read files through read_document/read_file, summarise each in 1-2 sentences, and write_metadata with the full index (keep existing entries).
 - The output of read_file/read_document/read_metadata/search_files/query_sql/analyze_image/analyze_video/list_dir that you see in TOOL RESULTS is a compressed note, not the raw content - it is written in fragments to save space, not full prose. Trust the facts in it. If it lacks a specific detail you now need, re-read the same file with a narrower request (e.g. a line range or a specific page) rather than assuming the detail doesn't exist.
@@ -960,8 +969,20 @@ def do_ask_user(t: dict, sess: Session) -> str:
 
 
 def confirm_if_needed(sess: Session, t: dict) -> str | None:
-    # Returns a "DENIED" string if the user refuses, else None. Autopilot skips these prompts (never the network ones - those live in the network executors).
     action = t["action"]
+    # Workflow files are the organization's procedures: never modified silently, not even in autopilot.
+    if action in ("write_file", "append_file", "delete_path", "move_path"):
+        try:
+            targets = [_safe(t.get("path"))] + ([_safe(t.get("destination"))] if t.get("destination") else [])
+        except Exception:
+            targets = []
+        wf_root = (STORAGE / WORKFLOWS_DIR).resolve()
+        if any(p == wf_root or wf_root in p.parents for p in targets):
+            if not needs_permission(sess, "permission",
+                                    f"This changes the organization's workflow file: {t.get('path')}. Allow?",
+                                    "Workflow files define how work is done here. Only approve if you intend to edit them."):
+                return f"DENIED: the user refused to modify workflow file {t.get('path')}."
+            return None
     if sess.autopilot:
         return None
     question = None
@@ -1040,22 +1061,26 @@ def run_batch(sess: Session, tasks: list) -> list:
 MAX_GAP_PATHS_SHOWN = 10   # kept only for do_read_metadata's own gap listing, not for the per-turn note anymore
 
 
+def workflow_files() -> list:
+    d = STORAGE / WORKFLOWS_DIR
+    if not d.is_dir():
+        return []
+    return sorted(f.name for f in d.iterdir() if f.is_file() and not f.name.startswith("."))
+
+
 def workspace_notes() -> str:
-    # PERF + CONTEXT: this used to dump the ENTIRE metadata index (up to METADATA_PROMPT_LIMIT chars) plus a
-    # full gap list into EVERY user turn and EVERY tool-results turn, whether or not the LLM needed any of it -
-    # on a real project this alone could be most of the context window, every single step. The index is now
-    # something the LLM fetches on demand with the existing read_metadata action (see do_read_metadata above),
-    # which already reports gaps and truncates sanely. This note is now just a one-line reminder that the
-    # index exists and may be partial, so the model knows to check it instead of guessing or re-reading files
-    # it already has notes on. It's kept tiny and cheap: one metadata() existence check, no full directory walk.
     meta = load_metadata()
     if meta:
         note = f"[WORKSPACE] metadata index present ({len(meta)} entries, may not cover every file). Call read_metadata if you need it - do not assume it's complete or incomplete."
     else:
         note = "[WORKSPACE] no metadata index yet. Call read_metadata if you want to check, or read_file/read_document directly if you already know what you need."
+    wf = workflow_files()
+    if wf:
+        note += f" [WORKFLOWS] {WORKFLOWS_DIR}/: {', '.join(wf[:20])}. Read the ones matching the task before working."
+    else:
+        note += f" [WORKFLOWS] no '{WORKFLOWS_DIR}' folder found - proceed with standard practice and state your assumptions."
     note += f" [CAPABILITIES] vision: {'available' if vision_enabled else 'NOT available'}."
     return note
-
 
 def summarize_output(task_message: str, action: str, raw_output: str) -> str:
     # Compresses ONE tool's raw output into a short, task-aware note before it ever reaches sess.context.
