@@ -2,6 +2,8 @@
 *
 !Blueprint
 !ProjectBackend/LocalStorage
+!ProjectBackend/LocalStorage/workflow
+!ProjectBackend/LocalStorage/workflow/**
 !ProjectBackend/LocalStorage/LocalStorage.md
 !README.md
 !GUI
