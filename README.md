@@ -20,11 +20,18 @@ EcOS/
 │   │   └── video_interpreter.py
 │   ├── LLM/                           
 │   │   └── Qwen3.5-9B-Q4_K_M.gguf
-│   ├── LocalStorage/                  
+│   ├── LocalStorage/
+│   ├── ToolCall/
+│   │   └── web_requests.py
 │   ├── central_backend.py             
 │   ├── server.py
 │   └── sandbox.py                   
 ├── GUI/                      ------> Flutter Web app for locally hosted LLMs or the centres (An open-source customisable tool for researchers)
+├── EcOS_UI/                  ------> Flutter Web app for local Users (Workers, etc) using 3rd party API calls to LLMs
+│   ├── lib/
+│   │   ├── main.dart
+│   │   └── dashboard.dart
+│   └── assets/
 ├── cli.py                            
 └── README.md
 ```
@@ -71,7 +78,7 @@ The EcOS Agent can be accessed in two ways:
 |Member|Work|
 |---|---|
 |**Aradhya**|Tool Call|
-|**Asjad**|Central Backend, Collection of LLMs and API Access, Interpreter, Sandbox, CLI Application, GUI Application|
+|**Asjad**|Central Backend, Collection of LLMs and API Access, Interpreter, Sandbox, CLI Application, GUI Application, Tool Call|
 |**Jairaj**|Interpreter|
 |**Mujtaba**|Interpreter|
 
