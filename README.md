@@ -72,6 +72,7 @@ The EcOS Agent can be accessed in two ways:
 - [x] **Sandbox** - It helps executing code to do a variety of tasks like creating PPT, DOCUMENT, PDF, XCEL, CSV, etc and doing some calculations. (Second most important thing)
 - [x] **CLI Application**
 - [x] **GUI Application** (Web Based or mobile based one for all to be made on Flutter)
+- [x] **EcOS_UI** (Mobile App for EcOS to be made on Flutter)
 - [x] **Testing and Improvements**
 - [x] **Finalizing**
 
