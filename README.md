@@ -1,16 +1,15 @@
-# Agentic-AI
-A **privacy-first** AI agent designed for **long-horizon**, **confidential tasks**. It runs entirely **locally** on your own server, **without internet** access, ensuring **secure data processing** and **efficient performance** even on low-spec hardware.
+# EcOS
+A **marine-intelligence** AI agent designed for **safety-critical**, **real-time decisions at sea**. It runs on a **multi-agent** core that plans, fetches and correlates **satellite, weather and ocean data**, and replies in the fisherman's own **regional language**, giving **explainable recommendations**, **proactive alerts** and **drift-aware geofencing** even in **low-connectivity** waters.
 
 ## Project Structure
 ```
 GitHub Repository
-AgenticAI/
+EcOS/
 ├── Blueprint/
-│   ├── Blueprint of SIH26117.pdf
 │   ├── blueprint_implementation.ipynb
 │   └── sample_qwen_output.json
 ├── ProjectBackend/
-│   ├── Interpreter/                    <---- I
+│   ├── Interpreter/                   
 │   │   ├── ppt_interpreter.py
 │   │   ├── docx_interpreter.py
 │   │   ├── xcel_interpreter.py
@@ -19,20 +18,20 @@ AgenticAI/
 │   │   ├── zip_interpreter.py
 │   │   ├── image_and_encoded_image_interpreter.py
 │   │   └── video_interpreter.py
-│   ├── LLM/                            <---- L
+│   ├── LLM/                           
 │   │   └── Qwen3.5-9B-Q4_K_M.gguf
-│   ├── LocalStorage/                   <---- S
-│   ├── central_backend.py              <---- B
+│   ├── LocalStorage/                  
+│   ├── central_backend.py             
 │   ├── server.py
-│   └── sandbox.py                      <---- C
-├── GUI/                                <---- F
-├── cli.py                              <---- F
+│   └── sandbox.py                   
+├── GUI/                      ------> Flutter Web app for locally hosted LLMs or the centres (An open-source customisable tool for researchers)
+├── cli.py                            
 └── README.md
 ```
-_To see what these **I, L, S, B, C & F** represents, see the **"Blueprint of SIH26117.pdf"**._
+
 
 ## How to use this Agent
-
+> For Researchers or Hosting Centers
 1. Pull this Github Repo on your computer.
 2. Download your desired LLM in `gguf` format from Hugging Face into the `LLM` dirrectory inside the `ProjectBackend` directory, and name the model as `main.gguf` and the vision model as `main_vision.gguf`.
 3. Navigate to the AgenticAI directory in terminal.
@@ -43,22 +42,27 @@ python3 start.py --gui
 5. It will open the AgenticAI in your Local Browser.
 6. 🎉 Enjoy the Automation, by adding your required files in the `LocalStorage` Directory
 
-_😊We hope that you will definately feel our work..._
+> For Local Workers
+1. Open the Link :
+```link
+https://google.com/
+```
+2. 🎉 Enjoy the Automation
+_😊 We hope that you will definitely feel our work..._
 
 `User (CLI, GUI) <---> Server (Python) <---> Central Backend (Python)`
 
-The Agent can be accessed in two ways:
+The EcOS Agent can be accessed in two ways:
 1. **CLI**
 2. **GUI**
 
 ### To Do List:
 - [x] **Central Backend** - Acts as the primary execution engine (Rule based or Deep Learning Based)
-- [x] **Collection of LLMs** - Acting as different parts of a brain to process various types of received data. (Managing which LLM to use when whithout needing to swap LLMs)
-- [x] **Interpreter** - It interprets meaning from the documents, images and videos. (long xcel and csv data dealing, video dealing)
-- [x] **Sandbox** - It helps executing code to do a variety of tasks like creating PPT, DOCUMENT, PDF, XCEL, CSV, etc and doing some calculations.
-- [x] **Safety Net for Sudden Power-cuts.**
+- [x] **Collection of LLMs & API Access** - Acting as different parts of a brain to process various types of received data. (Managing which LLM to use when whithout needing to swap LLMs)
+- [x] **Interpreter** - It interprets meaning from the documents, images and videos. (long xcel and csv data dealing, video dealing, the most important thing needed for EcOS)
+- [x] **Sandbox** - It helps executing code to do a variety of tasks like creating PPT, DOCUMENT, PDF, XCEL, CSV, etc and doing some calculations. (Second most important thing)
 - [x] **CLI Application**
-- [x] **GUI Application** (Web Based)
+- [x] **GUI Application** (Web Based or mobile based one for all to be made on Flutter)
 - [x] **Testing and Improvements**
 - [x] **Finalizing**
 
@@ -66,8 +70,8 @@ The Agent can be accessed in two ways:
 
 |Member|Work|
 |---|---|
-|**Aradhya**|Safety Net for Sudden Power-cuts|
-|**Asjad**|Central Backend, Collection of LLMs, Interpreter, Sandbox, CLI Application, GUI Application|
+|**Aradhya**|Tool Call|
+|**Asjad**|Central Backend, Collection of LLMs and API Access, Interpreter, Sandbox, CLI Application, GUI Application|
 |**Jairaj**|Interpreter|
 |**Mujtaba**|Interpreter|
 
