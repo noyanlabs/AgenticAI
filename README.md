@@ -38,6 +38,13 @@ EcOS/
 
 
 ## How to use this Agent
+> For Local Workers
+1. Open the Link :
+```link
+https://google.com/
+```
+2. 🎉 Enjoy the Automation
+
 > For Researchers or Hosting Centers
 1. Pull this Github Repo on your computer.
 2. Download your desired LLM in `gguf` format from Hugging Face into the `LLM` dirrectory inside the `ProjectBackend` directory, and name the model as `main.gguf` and the vision model as `main_vision.gguf`.
@@ -49,12 +56,6 @@ python3 start.py --gui
 5. It will open the AgenticAI in your Local Browser.
 6. 🎉 Enjoy the Automation, by adding your required files in the `LocalStorage` Directory
 
-> For Local Workers
-1. Open the Link :
-```link
-https://google.com/
-```
-2. 🎉 Enjoy the Automation
 _😊 We hope that you will definitely feel our work..._
 
 `User (CLI, GUI) <---> Server (Python) <---> Central Backend (Python)`
