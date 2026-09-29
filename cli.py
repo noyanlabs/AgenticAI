@@ -32,12 +32,11 @@ TYPEWRITER_MIN_CHUNK = 3
 console = Console()
 state = {"token": None, "session_id": None, "autopilot": False, "net_total": 0, "net_sent": 0, "net_blocked": 0, "net_denied": 0}
 BANNER = r"""
-    _                     _   _        _    ___
-   /_\   __ _ ___ _ __  | |_(_) ___  /_\  |_ _|
-  //_\\ / _` / _ \ '_ \ | __| |/ __|//_\\  | |
- /  _  \ (_| |  __/ | | || |_| | (__/  _  \ | |
- \_/ \_/\__, |\___|_| |_| \__|_|\___\_/ \_/___|
-        |___/
+ _____      ___  ____  
+| ____|__ _/ _ \/ ___| 
+|  _| / _` | | | \___ \ 
+| |__| (_| | |_| |___) |
+|_____\__,_|\___/|____/ 
 """
 MATH_SYMBOLS = {r"\alpha": "α", r"\beta": "β", r"\gamma": "γ", r"\delta": "δ", r"\theta": "θ", r"\lambda": "λ", r"\mu": "μ", r"\pi": "π", r"\sigma": "σ", r"\omega": "ω",
                 r"\Delta": "Δ", r"\Sigma": "Σ", r"\Omega": "Ω", r"\times": "×", r"\cdot": "·", r"\pm": "±", r"\leq": "≤", r"\geq": "≥", r"\neq": "≠", r"\approx": "≈",
