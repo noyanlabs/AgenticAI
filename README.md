@@ -31,7 +31,7 @@ EcOS/
 │   ├── lib/
 │   │   ├── main.dart
 │   │   └── dashboard.dart
-│   └── assets/
+│   └── build/                -------> We have already hosted this on Netlify, and the link is given below.
 │   │   └── web/
 ├── cli.py                            
 └── README.md
