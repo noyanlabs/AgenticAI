@@ -80,9 +80,9 @@ The EcOS Agent can be accessed in two ways:
 
 |Member|Work|
 |---|---|
-|**Aradhya**|Tool Call|
+|**Aradhya**|Tool Call, Backend|
 |**Asjad**|Central Backend, Collection of LLMs and API Access, Interpreter, Sandbox, CLI Application, GUI Application, Tool Call|
-|**Jairaj**|Interpreter|
-|**Mujtaba**|Interpreter|
+|**Jairaj**|Interpreter, Tool Call|
+|**Mujtaba**|Interpreter, Backend|
 
 100% Progress ====================
