@@ -32,6 +32,7 @@ EcOS/
 │   │   ├── main.dart
 │   │   └── dashboard.dart
 │   └── assets/
+│   │   └── web/
 ├── cli.py                            
 └── README.md
 ```
