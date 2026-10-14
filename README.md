@@ -1,5 +1,5 @@
-# EcOS
-A **marine-intelligence** AI agent designed for **safety-critical**, **real-time decisions at sea**. It runs on a **multi-agent** core that plans, fetches and correlates **satellite, weather and ocean data**, and replies in the fisherman's own **regional language**, giving **explainable recommendations**, **proactive alerts** and **drift-aware geofencing** even in **low-connectivity** waters.
+# AgenticAI
+A privacy-first AI agent designed for long-horizon, confidential tasks. It runs entirely locally on your own server, without internet access, ensuring secure data processing and efficient performance even on low-spec hardware.
 
 ## Project Structure
 ```
@@ -39,14 +39,7 @@ EcOS/
 
 
 ## How to use this Agent
-> For Local Workers
-1. Open the Link :
-```link
-https://google.com/
-```
-2. 🎉 Enjoy the Automation
 
-> For Researchers or Hosting Centers
 1. Pull this Github Repo on your computer.
 2. Download your desired LLM in `gguf` format from Hugging Face into the `LLM` dirrectory inside the `ProjectBackend` directory, and name the model as `main.gguf` and the vision model as `main_vision.gguf`.
 3. Navigate to the AgenticAI directory in terminal.
