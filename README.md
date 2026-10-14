@@ -61,11 +61,10 @@ The EcOS Agent can be accessed in two ways:
 ### To Do List:
 - [x] **Central Backend** - Acts as the primary execution engine (Rule based or Deep Learning Based)
 - [x] **Collection of LLMs & API Access** - Acting as different parts of a brain to process various types of received data. (Managing which LLM to use when whithout needing to swap LLMs)
-- [x] **Interpreter** - It interprets meaning from the documents, images and videos. (long xcel and csv data dealing, video dealing, the most important thing needed for EcOS)
+- [x] **Interpreter** - It interprets meaning from the documents, images and videos. (long xcel and csv data dealing, video dealing, the most important thing needed for AgenticAI)
 - [x] **Sandbox** - It helps executing code to do a variety of tasks like creating PPT, DOCUMENT, PDF, XCEL, CSV, etc and doing some calculations. (Second most important thing)
 - [x] **CLI Application**
 - [x] **GUI Application** (Web Based or mobile based one for all to be made on Flutter)
-- [x] **EcOS_UI** (Mobile App for EcOS to be made on Flutter)
 - [x] **Testing and Improvements**
 - [x] **Finalizing**
 
